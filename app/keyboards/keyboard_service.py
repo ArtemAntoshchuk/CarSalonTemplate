@@ -28,6 +28,9 @@ class KeyboardService:
             keyboards_row = []
             for btn in row:
                 button = KeyboardButton(text=btn)
+                # todo change logic for phone num request kb
+                if btn == "Поділитись контактом📞":
+                    button.request_contact = True
                 keyboards_row.append(button)
             keyboard.append(keyboards_row)
 

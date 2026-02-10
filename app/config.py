@@ -13,6 +13,7 @@ class Config:
     DB_PORT: str = os.getenv("DB_PORT", "")
     DB_PASSWORD: str = os.getenv("DB_PASSWORD", "")
     DB_SSL: str = os.getenv("DB_SSL", "disable")
+    DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
     @classmethod
     def validate(cls) -> bool:
