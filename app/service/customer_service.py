@@ -1,5 +1,5 @@
 
-from app.db.customer_orm_query import get_customer_by_tg_id, create_customer
+from app.db.customer_orm_query import get_customer_by_tg_id, create_customer, delete_customer_by_tg_id
 from app.db.db import AsyncSession
 from app.db.models import Customer
 

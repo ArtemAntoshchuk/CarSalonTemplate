@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import Customer
@@ -11,4 +11,9 @@ async def get_customer_by_tg_id(tg_id, session:AsyncSession):
 
 async def create_customer(customer:Customer, session:AsyncSession):
     session.add(customer)
+    await session.commit()
+
+async def delete_customer_by_tg_id(tg_id, session:AsyncSession):
+    query = delete(Customer).where(Customer.telegram_id == tg_id)
+    await session.execute(query)
     await session.commit()

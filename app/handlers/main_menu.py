@@ -5,6 +5,7 @@ from aiogram.types import Message
 
 from app.keyboards.keyboard_service import get_keyboard
 from app.keyboards.keyboards_enum import KeyboardsVariant
+from app.service.car_service import get_cars_by_brand
 from app.service.customer_service import customer_is_registered, register_customer
 from app.states.state import CustomerRegister
 
@@ -35,3 +36,9 @@ async def register(message: Message, state: FSMContext):
     else:
         await message.answer(text="Будь ласка зареєструйтесь:\nПоділіться номером🔽",
                              reply_markup=get_keyboard(KeyboardsVariant.PHONE_KB))
+
+
+@router.message(Command(commands=['allCars']))
+async def show_cars(message: Message):
+    cars = await get_cars_by_brand(1)
+    await message.answer(text=str(cars))
