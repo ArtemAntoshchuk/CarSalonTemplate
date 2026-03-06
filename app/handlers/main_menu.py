@@ -1,13 +1,14 @@
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
+from magic_filter import F
 
 from app.keyboards.keyboard_service import get_keyboard
 from app.keyboards.keyboards_enum import KeyboardsVariant
-from app.service.car_service import get_cars_by_brand
+from app.service.car_service import get_cars_by_brand, get_all_cars_base_dto
 from app.service.customer_service import customer_is_registered, register_customer
-from app.states.state import CustomerRegister
+from app.states.state import CustomerRegister, MenuState
 
 router = Router()
 
@@ -38,7 +39,65 @@ async def register(message: Message, state: FSMContext):
                              reply_markup=get_keyboard(KeyboardsVariant.PHONE_KB))
 
 
-@router.message(Command(commands=['allCars']))
-async def show_cars(message: Message):
-    cars = await get_cars_by_brand(1)
-    await message.answer(text=str(cars))
+'''
+     Message template:
+     
+     Image(one ore three)
+     Base info
+     |<Prev           |       Next> |
+     |Add to favorites| More Details|
+     |           More photo         |
+'''
+
+@router.message(F.text=="Подивитися всі машини🚗")
+# async def show_cars(message: Message):
+#     cars = await get_cars_by_brand(1)
+#     await message.answer(text=str(cars))
+async def show_cars(message: Message, state: FSMContext):
+    #Set state for viewing all cars
+    await state.set_state(MenuState.view_all_cars)
+    #                     key = value
+    await state.update_data(page=1)
+    await display_car(message=message, state=state)
+
+# NAVIGATION REGION
+@router.callback_query(F.data=="next" and MenuState.view_all_cars)
+async def switch_to_next_cars(callback: CallbackQuery, state: FSMContext):
+    state_data = await state.get_data()
+    page = state_data["page"]
+    page += 1
+    await state.update_data(page=page)
+    await update_car(message=callback.message, state=state)
+
+
+@router.callback_query(F.data == "prev" and MenuState.view_all_cars)
+async def switch_to_prev_cars(callback: CallbackQuery, state: FSMContext):
+    state_data = await state.get_data()
+    page = state_data["page"]
+    if page > 1:
+        page -= 1
+    await state.update_data(page=page)
+    await update_car(message=callback.message, state=state)
+
+
+async def display_car(message: Message, state: FSMContext):
+    #todo change getting car from list
+    cars = get_all_cars_base_dto()
+    page = await state.get_data()["page"]
+    car = cars[page-1]
+
+    short_info = f"{car.brand} - {car.model}({car.year}), ${car.price}"
+
+    await message.answer(text=short_info, reply_markup=get_keyboard(KeyboardsVariant.NAVI_KB))
+
+
+# @router.callback_query(F.data=="next", state=MenuState.view_fa_cars)
+
+async def update_car(message: Message, state: FSMContext):
+    cars = get_all_cars_base_dto()
+    page = await state.get_data()["page"]
+    car = cars[page - 1]
+
+    short_info = f"{car.brand} - {car.model}({car.year}), ${car.price}"
+
+    await message.edit_text(text=short_info)

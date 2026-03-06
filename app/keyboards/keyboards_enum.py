@@ -4,3 +4,4 @@ from enum import Enum
 class KeyboardsVariant(Enum):
     START_KEYBOARD = "start_menu"
     PHONE_KB = "phone_kb"
+    NAVI_KB = "navi_kb"

@@ -9,3 +9,7 @@ phone_kb:
   buttons:
     - ["Поділитись контактом📞"]
 
+navigation_kb:
+  type: INLINE
+  buttons:
+    - [ {text: "⬅️ Назад", callback: "prev"}, {text: "➡️ Вперед", callback: "next"} ]

@@ -1,7 +1,8 @@
-from app.db.car_orm_query import create_car, get_cars_by
+from app.db.car_orm_query import create_car, get_cars_by, find_all_cars
 from app.db.db import AsyncSession
 from app.db.models import Car, Model
-from app.service.models_service import get_models_by_brand
+from app.service.models_service import get_models_by_brand, get_model_by_id, get_brand_by_model_id
+from app.dto.dto import CarBaseInfoDTO
 
 
 async def add_car(model: Model,
@@ -53,3 +54,19 @@ async def get_cars_by_brand(brand_id):
 async def get_cars_by_model(model_id):
     async with AsyncSession() as session:
         return await get_cars_by(session, model_id=model_id)
+
+async def get_all_cars_base_dto():
+    cars = []
+    async with AsyncSession() as session:
+        cars = await find_all_cars(session)
+
+    cars_base_dto = []
+    for car in cars:
+        model = get_model_by_id(car.model_id)
+        brand = get_brand_by_model_id(car.model_id)
+
+        car_base_info_dto = CarBaseInfoDTO(brand=brand, model=model, year=car.year_produced, price=car.price)
+        cars_base_dto.append(car_base_info_dto)
+
+    return cars_base_dto
+        #todo create part for creating CarBaseInfoDTO object by car from list

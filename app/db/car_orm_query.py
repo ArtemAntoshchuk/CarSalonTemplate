@@ -42,6 +42,11 @@ async def delete_car_by_id(car_id, session: AsyncSession):
     await session.execute(query)
     await session.commit()
 
+async def find_all_cars(session: AsyncSession):
+    query = select(Car)
+    result = await session.execute(query)
+
+    return result.scalars().all()
 
 async def get_cars_by(session: AsyncSession, **filters):
     query = select(Car).filter_by(**filters)
