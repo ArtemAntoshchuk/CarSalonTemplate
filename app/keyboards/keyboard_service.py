@@ -39,17 +39,21 @@ class KeyboardService:
 
     @staticmethod
     def __parse_inline_kb(buttons):
-        keyboard = InlineKeyboardMarkup()
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[])
+        rows = []
         for row in buttons:
             keyboard_row = []
             for btn in row:
                 if isinstance(btn, dict):
                     text = btn.get("text")
                     callback_data = btn.get("callback", text)
+                    print(callback_data)
                     keyboard_row.append(InlineKeyboardButton(text=text, callback_data=callback_data))
                 else:
                     keyboard_row.append(InlineKeyboardButton(text=btn, callback_data=btn))
-            keyboard.row(*keyboard_row)
+            rows.append(keyboard_row)
+
+        keyboard.inline_keyboard = rows
         return keyboard
 
 

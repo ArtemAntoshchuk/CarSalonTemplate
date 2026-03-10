@@ -62,8 +62,8 @@ async def get_all_cars_base_dto():
 
     cars_base_dto = []
     for car in cars:
-        model = get_model_by_id(car.model_id)
-        brand = get_brand_by_model_id(car.model_id)
+        model = await get_model_by_id(car.model_id)
+        brand = await get_brand_by_model_id(car.model_id)
 
         car_base_info_dto = CarBaseInfoDTO(brand=brand, model=model, year=car.year_produced, price=car.price)
         cars_base_dto.append(car_base_info_dto)
