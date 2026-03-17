@@ -1,4 +1,5 @@
 from app.db.car_orm_query import create_car, get_cars_by, find_all_cars
+from app.db.car_orm_query import get_count_of_cars as get_count_cars
 from app.db.db import AsyncSession
 from app.db.models import Car, Model
 from app.service.models_service import get_models_by_brand, get_model_by_id, get_brand_by_model_id
@@ -70,3 +71,8 @@ async def get_all_cars_base_dto():
 
     return cars_base_dto
         #todo create part for creating CarBaseInfoDTO object by car from list
+
+
+async def get_count_of_cars():
+    async with AsyncSession() as session:
+        return await get_count_cars(session)

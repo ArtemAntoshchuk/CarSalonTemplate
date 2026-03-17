@@ -6,7 +6,7 @@ from aiogram import F
 
 from app.keyboards.keyboard_service import get_keyboard
 from app.keyboards.keyboards_enum import KeyboardsVariant
-from app.service.car_service import get_cars_by_brand, get_all_cars_base_dto
+from app.service.car_service import get_cars_by_brand, get_all_cars_base_dto, get_count_of_cars
 from app.service.customer_service import customer_is_registered, register_customer
 from app.states.state import CustomerRegister, MenuState
 
@@ -65,7 +65,12 @@ async def show_cars(message: Message, state: FSMContext):
 async def switch_to_next_cars(callback: CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
     page = state_data["page"]
-    page += 1
+    # max page = count of cars
+    if page < await get_count_of_cars():
+        page += 1
+    else:
+        page = 1
+
     await state.update_data(page=page)
     await update_car(message=callback.message, state=state)
 
@@ -74,28 +79,28 @@ async def switch_to_next_cars(callback: CallbackQuery, state: FSMContext):
 async def switch_to_prev_cars(callback: CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
     page = state_data["page"]
+    # max page = count of cars
     if page > 1:
         page -= 1
+    else:
+        page = await get_count_of_cars()
+
     await state.update_data(page=page)
     await update_car(message=callback.message, state=state)
 
 
 async def display_car(message: Message, state: FSMContext):
-    #todo change getting car from list
-    cars = await get_all_cars_base_dto()
-    data = await state.get_data()
-    page = data["page"]
-    print(page)
-    car = cars[page-1]
-
-    short_info = f"{car.brand.name} - {car.model.name}({car.year}), ${car.price}"
-
+    short_info = await get_car_short_info(state)
     await message.answer(text=short_info, reply_markup=get_keyboard(KeyboardsVariant.NAVI_KB))
 
 
 # @router.callback_query(F.data=="next", state=MenuState.view_fa_cars)
 
 async def update_car(message: Message, state: FSMContext):
+    short_info = await get_car_short_info(state)
+    await message.edit_text(text=short_info, reply_markup=get_keyboard(KeyboardsVariant.NAVI_KB))
+
+async def get_car_short_info(state: FSMContext):
     cars = await get_all_cars_base_dto()
     data = await state.get_data()
     page = data["page"]
@@ -103,4 +108,5 @@ async def update_car(message: Message, state: FSMContext):
     print(page)
     short_info = f"{car.brand.name} - {car.model.name}({car.year}), ${car.price}"
 
-    await message.edit_text(text=short_info, reply_markup=get_keyboard(KeyboardsVariant.NAVI_KB))
+    return short_info
+

@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import Car
@@ -53,3 +53,10 @@ async def get_cars_by(session: AsyncSession, **filters):
     result = await session.execute(query)
 
     return result.scalars().all()
+
+
+async def get_count_of_cars(session: AsyncSession):
+    query = select(func.count()).select_from(Car)
+    result = await session.execute(query)
+
+    return result.scalars().one()

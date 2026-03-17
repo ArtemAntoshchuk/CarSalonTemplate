@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, TIMESTAMP, Numeric, Boolean
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, TIMESTAMP, Numeric, Boolean, Text
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -76,4 +76,12 @@ class Favorites(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     customer_id = Column(Integer, ForeignKey('customer.id'), nullable=False)
+    car_id = Column(Integer, ForeignKey('car.id'), nullable=False)
+
+
+class Photo(Base):
+    __tablename__ = 'photo'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    url = Column(Text, nullable=False)
     car_id = Column(Integer, ForeignKey('car.id'), nullable=False)
