@@ -1,0 +1,19 @@
+from sqlalchemy import select, delete
+from app.db.db import SessionLocal as AsyncSession
+
+from app.db.models import Customer
+
+
+async def get_customer_by_tg_id(tg_id, session:AsyncSession):
+    customer = await session.execute(select(Customer).where(Customer.telegram_id == tg_id))
+    customer = customer.scalar_one_or_none()
+    return customer
+
+async def create_customer(customer:Customer, session:AsyncSession):
+    session.add(customer)
+    await session.commit()
+
+async def delete_customer_by_tg_id(tg_id, session:AsyncSession):
+    query = delete(Customer).where(Customer.telegram_id == tg_id)
+    await session.execute(query)
+    await session.commit()
