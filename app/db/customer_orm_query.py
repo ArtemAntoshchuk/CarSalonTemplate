@@ -1,5 +1,5 @@
 from sqlalchemy import select, delete
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.db import SessionLocal as AsyncSession
 
 from app.db.models import Customer
 

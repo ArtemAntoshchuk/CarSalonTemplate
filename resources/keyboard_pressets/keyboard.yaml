@@ -3,6 +3,7 @@ start_menu:
   buttons:
     - ["Подивитися всі машини🚗"]
     - ["Перейти до пошуку🔎"]
+    - ["Додати автомобіль🚗"]
 
 phone_kb:
   type: REPLY
@@ -13,3 +14,48 @@ navi_kb:
   type: INLINE
   buttons:
     - [ {text: "⬅️ Назад", callback: "prev"}, {text: "➡️ Вперед", callback: "next"} ]
+
+navi_kb_copy:
+  type: INLINE
+  buttons:
+    - [ {text: "⬅️ Назад", callback: "prev"}, {text: "➡️ Вперед", callback: "next"} ]
+    - [ {text: "Додати в обране ❤️", callback: "save_to_fav"}]
+    - [ {text: "Більше інформації 📋", callback: "more_info"}]
+
+navi_kb_copy_in_favorites:
+  type: INLINE
+  buttons:
+    - [ {text: "⬅️ Назад", callback: "prev"}, {text: "➡️ Вперед", callback: "next"} ]
+    - [ {text: "Прибрати з обраних ❤️❌", callback: "delete_from_fav"}]
+    - [ {text: "Більше інформації 📋", callback: "more_info"}]
+
+add_photos_kb:
+  type: REPLY
+  buttons:
+    - ["Додати фото📸"]
+
+skip_continue_kb:
+  type: INLINE
+  buttons:
+    - [{text: "Пропустити❌",  callback: "skip"}, {text: "Продовжити✅", callback: "continue"}]
+
+was_in_accident_kb:
+  type: INLINE
+  buttons:
+    - [{text: "була💥", callback: "True"}, {text: "не була😇", callback: "False"}]
+
+engine_custom_or_not:
+  type: INLINE
+  buttons:
+    - [{text: "Вибрати зі списку📃", callback: "list"}, {text: "Створити кастомний⚙️", callback: "custom"}]
+
+yes_or_no_kb:
+  type: INLINE
+  buttons:
+    - [{text: "Так✅", callback: "yes"}, {text: "Ні❌", callback: "no"}]
+
+penta_genius_kb:
+  type: REPLY
+  buttons:
+    - ["Закінчити завантаження фото📸"]
+

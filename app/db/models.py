@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, TIMESTAMP, Numeric, Boolean, Text
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, TIMESTAMP, Numeric, Boolean, Text, func
+from sqlalchemy.orm import declarative_base, Relationship, relationship
 
 Base = declarative_base()
 
@@ -31,6 +31,14 @@ class Model(Base):
     model_class = Column(String, nullable=False, name='class')
 
 
+class ShifterType(Base):
+    __tablename__ = 'shifter_type'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+
+
+
 class Car(Base):
     __tablename__ = 'car'
 
@@ -39,17 +47,14 @@ class Car(Base):
     price = Column(Numeric(15,2), nullable=False)
     vin = Column(String, nullable=False)
     mileage = Column(Integer)
-    engine_type = Column(String, nullable=False)
-    engine_gen = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    shifter_type = Column(String, nullable=False)
+    shifter_type_id = Column(Integer, ForeignKey("shifter_type.id"), nullable=False)
     year_produced = Column(Integer, nullable=False)
-    horse_power = Column(Integer, nullable=False)
-    color = Column(String, nullable=False)
+    color_id = Column(Integer, ForeignKey('color.id'), nullable=False)
     status = Column(String, nullable=False, default='available')
-    created_at = Column(TIMESTAMP, nullable=False)
-    engine_volume = Column(Numeric(3,1), nullable=False)
+    created_at = Column(TIMESTAMP, server_default=func.now(), nullable=False)
     was_in_accident = Column(Boolean, nullable=False)
+    engine_id = Column(Integer, ForeignKey('engine.id'), nullable=False)
 
 
 class Orders(Base):
@@ -83,5 +88,33 @@ class Photo(Base):
     __tablename__ = 'photo'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    url = Column(Text, nullable=False)
+    photo_tg_id = Column(String, nullable=False)
+    is_main = Column(Boolean, nullable=False, default=False)
     car_id = Column(Integer, ForeignKey('car.id'), nullable=False)
+
+
+class CarEngine(Base):
+    __tablename__ = 'engine'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    engine_type_id = Column(Integer, ForeignKey("engine_type.id"), nullable=False)
+    gen = Column(String, nullable=False)
+    volume = Column(Numeric(3,1), nullable=False)
+    horse_power = Column(Integer)
+
+
+class Color(Base):
+    __tablename__ = 'color'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+
+
+class EngineType(Base):
+    __tablename__ = 'engine_type'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+
+

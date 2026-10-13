@@ -1,5 +1,5 @@
 from sqlalchemy import Select, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.db import SessionLocal as AsyncSession
 
 from app.db.models import Model
 
@@ -10,7 +10,7 @@ async def get_models_by_brand(brand_id, session:AsyncSession):
 
     return result.scalars().all()
 
-#todo add method for getting model by id
+
 
 async def get_model_by_id(model_id, session:AsyncSession):
     model = await session.execute(select(Model).where(Model.id == model_id))
